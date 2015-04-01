@@ -116,8 +116,10 @@
 	var playground = new PlayGround();
 	setInterval(playground.loop, 10);
 
-	var mousedown_time;
-	var time_pressed;
+	var mousedown_time,
+		time_pressed,
+		x_page,
+		y_page;
 
 	function getTime(){
 		var date = new Date();
@@ -127,13 +129,19 @@
 	document.onmousedown = function(ev){
 		mousedown_time = getTime();
 	};
+	document.ontouchstart = function(ev){
+		x_page = ev.pageX;
+		y_page = ev.pageY;
+		mousedown_time = getTime();
+	};
 
 	document.onmouseup = function(ev){
 		time_pressed = getTime() - mousedown_time;
-	};
-
-	document.onclick = function(ev) {
 		playground.createNewCircle(ev.x,ev.y,time_pressed);
+	};
+	document.ontouchend = function(ev){
+		time_pressed = getTime() - mousedown_time;
+		playground.createNewCircle(x_page,y_page,time_pressed);
 	};
 
 	/* Vector Functions */
