@@ -199,17 +199,14 @@
 
 	/* Collision Functions */
 
-	// sets new velocity vectors for each circle based on masses, unit normal vector, and impulse
+	// sets new velocity vectors using impulse-based reaction model (http://en.wikipedia.org/wiki/Collision_response#Impulse-Based_Contact_Model)
 	function collision_response(circle1, circle2, offset)
 	{
 		var Vab = vDiff(circle1.info.velocity, circle2.info.velocity),
 		N = collisionN(circle1, circle2),
 		m1 = circle1.info.mass,
 		m2 = circle2.info.mass,
-		x1 = circle1.info.cx,
-		y1 = circle1.info.cy,
-		x2 = circle2.info.cx,
-		y2 = circle2.info.cy;
+		epsilon = 1;
 
 		console.log('initial offset',offset);
 
@@ -225,8 +222,8 @@
 		var test_offset = (radius_sum - distance) / 2;
 		console.log('final offset',test_offset);
 
-		// collision impulse featuring perfectly elastic collision
-		var f = (-(1 + 1) * vDot(Vab, N)) / (vDot(N, N) * (1 / m1 + 1 / m2));
+		// collision impulse featuring epsilon (coefficient of restitution) = 1
+		var f = (-(1 + epsilon) * vDot(Vab, N)) / (vDot(N, N) * (1 / m1 + 1 / m2));
 
 		circle1.info.velocity = vAdd(circle1.info.velocity, vMulti(f / m1, N));
 		circle2.info.velocity = vDiff(circle2.info.velocity, vMulti(f / m2, N));
